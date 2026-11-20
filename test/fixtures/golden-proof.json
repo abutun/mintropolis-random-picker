@@ -1,0 +1,39 @@
+{
+  "protocol": "mintropolis-random-picker-proof/v1",
+  "manifest": {
+    "protocol": "mintropolis-random-picker/v1",
+    "algorithm": "sha256-counter-fisher-yates/v1",
+    "mode": "scheduled",
+    "id": "giveaway-1",
+    "title": "Community giveaway",
+    "rules": "One entry per verified person.",
+    "participants": [
+      "@alice",
+      "@bob",
+      "@zed"
+    ],
+    "winnerCount": 1,
+    "alternateCount": 1,
+    "scheduledAt": "2026-11-16T04:29:24.000Z",
+    "beacon": {
+      "chainHash": "52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971",
+      "round": 34000000
+    }
+  },
+  "manifestHash": "2a7df43cca0ba80dee18373110d170fc4a43fffae7627e46b7fe11c0f1a89dc6",
+  "entropy": {
+    "type": "drand",
+    "beacon": {
+      "round": 34000000,
+      "randomness": "25286e095fc8f1d411bc86f8515babdb571f85629592dff9a38160e77358d8b0",
+      "signature": "b4fec76939fa077a38b30d35cc5cc2426f9bfef2e9363b89787d2466a29ab01be346b95e771c727676e54368ef662dbb"
+    }
+  },
+  "winners": [
+    "@bob"
+  ],
+  "alternates": [
+    "@alice"
+  ],
+  "commitmentEvidence": null
+}

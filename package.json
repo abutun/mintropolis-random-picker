@@ -1,0 +1,21 @@
+{
+  "name": "@mintropolis/random-picker",
+  "version": "1.0.0",
+  "description": "Auditable local and future-beacon community random draws",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "exports": {
+    ".": { "types": "./src/index.d.mts", "import": "./src/index.mjs" },
+    "./quicknet": { "types": "./src/quicknet.d.mts", "import": "./src/quicknet.mjs" }
+  },
+  "bin": { "random-picker-verify": "./src/cli.mjs" },
+  "files": ["src", "dist", "test", "scripts", "README.md", "PROTOCOL.md", "LICENSE"],
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "npm test && npm run build",
+    "verify": "node src/cli.mjs"
+  },
+  "optionalDependencies": { "drand-client": "1.4.2" }
+}
