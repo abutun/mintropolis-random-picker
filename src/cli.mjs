@@ -10,7 +10,7 @@ if (args.length !== 1 || args[0] === '--help') {
 } else {
   try {
     const file = await stat(args[0]);
-    if (!file.isFile() || file.size > 8 * 1024 * 1024) throw new Error('Expected a proof JSON file smaller than 8 MiB');
+    if (!file.isFile() || file.size > 16 * 1024 * 1024) throw new Error('Expected a proof JSON file no larger than 16 MiB');
     const result = await verifyProof(parseProof(await readFile(args[0],'utf8')));
     process.stdout.write(JSON.stringify(result,null,2) + '\n');
   } catch (error) {

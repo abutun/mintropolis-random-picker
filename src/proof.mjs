@@ -1,5 +1,5 @@
 import { PROOF_PROTOCOL } from './constants.mjs';
-import { canonicalJSON, cryptoAPI, exactKeys, hex, plainObject, requireValue, unhex } from './encoding.mjs';
+import { canonicalJSON, cryptoAPI, exactKeys, hex, plainObject, requireValue, unhex, utf8 } from './encoding.mjs';
 import { createManifest, hashManifest, validateManifest } from './manifest.mjs';
 import { deriveSeed, selectParticipants } from './random.mjs';
 import { verifyQuicknetBeacon } from './quicknet.mjs';
@@ -8,7 +8,7 @@ function evidenceCopy(evidence) {
   if (evidence === undefined || evidence === null) return null;
   requireValue(plainObject(evidence), 'Commitment evidence must be a JSON object');
   const json = canonicalJSON(evidence);
-  requireValue(json.length <= 100000, 'Commitment evidence is too large');
+  requireValue(utf8(json).byteLength <= 256 * 1024, 'Commitment evidence is too large');
   return JSON.parse(json);
 }
 
@@ -64,7 +64,7 @@ function validateProofShape(input) {
 }
 
 export function parseProof(json) {
-  requireValue(typeof json === 'string' && json.length <= 8 * 1024 * 1024,'Proof JSON is too large or is not a string');
+  requireValue(typeof json === 'string' && json.length <= 16 * 1024 * 1024,'Proof JSON is too large or is not a string');
   let value;try { value = JSON.parse(json); } catch { throw new Error('Invalid proof JSON'); }
   return validateProofShape(value);
 }

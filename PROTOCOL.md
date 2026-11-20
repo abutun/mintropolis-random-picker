@@ -65,6 +65,8 @@ Independent Python `hashlib` golden vector for the stream/selection helper: a 32
 
 The proof has exactly `protocol`, `manifest`, `manifestHash`, `entropy`, `winners`, `alternates`, and `commitmentEvidence`. Proof serialization is pretty JSON for humans; only the canonical manifest representation is hashed. Result arrays are recomputed and compared in exact order. Host receipt fields are described in README.
 
+`commitmentEvidence` is null or a JSON object whose canonical JSON representation encodes to at most 262,144 UTF-8 bytes (256 KiB). All fields, including an embedded manifest, count toward this separate evidence limit. The limit measures bytes, not Unicode characters or participant count.
+
 `valid: true` means the proof is structurally valid, the manifest hash matches, any required beacon verifies, and the ordered result reproduces. It does not authenticate an imported host receipt or prove eligibility/publication/first attempt. `prepublicationVerified` is always false in v1 because no independent witness provider is implemented. A purported external evidence object's own assertion cannot upgrade that value.
 
 The public fixture in `test/fixtures/quicknet-34000000.json` is a captured Quicknet beacon from public drand relays. Offline verification pins the network rather than trusting the fixture's chain metadata.

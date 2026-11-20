@@ -53,3 +53,29 @@ test('unwitnessed or post-round host receipts do not upgrade the trust claim',as
   const proof=await p.drawCommitted(manifest,fixture.beacon,{type:'host-receipt',id:'late',eventId:manifest.id,manifestHash,committedAt:manifest.scheduledAt,publicUrl:'/late'});
   assert.equal((await p.verifyProof(proof)).commitment.hostReportedBeforeBeacon,false);
 });
+
+test('valid public-host receipt above 100000 characters survives real-beacon draw and proof round trip',async()=>{
+  const participants=Array.from({length:499},(_,i)=>String(i).padStart(6,'0')+'x'.repeat(194));
+  const manifest=p.createManifest({...input,id:'public-receipt-boundary',participants,winnerCount:1,alternateCount:0});
+  const manifestHash=await p.hashManifest(manifest);
+  const requestBytes=Buffer.byteLength(JSON.stringify({manifest,manifestHash}),'utf8');
+  assert.ok(requestBytes<=100*1024,'Commitment must fit the public host POST limit');
+  const id='00000000-0000-4000-8000-000000000001';
+  const receipt={type:'host-receipt',id,eventId:manifest.id,manifestHash,committedAt:new Date(Date.parse(manifest.scheduledAt)-120000).toISOString(),publicUrl:'/tools/random-picker/draws/'+id,manifest};
+  assert.ok(JSON.stringify(receipt).length>100000,'Receipt must exercise the previous character limit');
+  const proof=await p.drawCommitted(manifest,fixture.beacon,receipt);
+  const checked=await p.verifyProof(p.parseProof(p.serializeProof(proof)));
+  assert.equal(checked.valid,true);
+  assert.equal(checked.beaconVerified,true);
+  assert.equal(checked.commitment.status,'host-attested');
+  assert.equal(checked.commitment.prepublicationVerified,false);
+});
+
+test('commitment evidence limit counts canonical UTF-8 bytes rather than characters',async()=>{
+  const manifest=p.createManifest(input);
+  // The text is below 256 Ki characters while its canonical UTF-8 JSON exceeds 256 KiB.
+  const evidence={type:'external-reference',text:'é'.repeat(128*1024)};
+  assert.ok(JSON.stringify(evidence).length<256*1024);
+  assert.ok(Buffer.byteLength(JSON.stringify(evidence),'utf8')>256*1024);
+  await assert.rejects(()=>p.drawCommitted(manifest,fixture.beacon,evidence),/evidence is too large/i);
+});
